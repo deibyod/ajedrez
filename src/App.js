@@ -113,6 +113,24 @@ function App() {
     return isValidStraightMove(fromRow, fromCol, toRow, toCol);
   };
 
+  const isValidStraightMove = (fromRow, fromCol, toRow, toCol) => {
+    if (fromRow !== toRow && fromCol !== toCol) return false;
+
+    if (fromRow === toRow) {
+      const step = fromCol < toCol ? 1 : -1;
+      for (let col = fromCol + step; col !== toCol; col += step) {
+        if (boardState[fromRow][col]) return false;
+      }
+    } else {
+      const step = fromRow < toRow ? 1 : -1;
+      for (let row = fromRow + step; row !== toRow; row += step) {
+        if (boardState[row][fromCol]) return false;
+      }
+    }
+
+    return true;
+  };
+
   const isValidKnightMove = (fromRow, fromCol, toRow, toCol) => {
     const rowDiff = Math.abs(fromRow - toRow);
     const colDiff = Math.abs(fromCol - toCol);
@@ -133,14 +151,21 @@ function App() {
     return rowDiff <= 1 && colDiff <= 1;
   };
 
-  const isValidStraightMove = (fromRow, fromCol, toRow, toCol) => {
-    if (fromRow !== toRow && fromCol !== toCol) return false;
-    return !isPathBlocked(fromRow, fromCol, toRow, toCol);
-  };
-
   const isValidDiagonalMove = (fromRow, fromCol, toRow, toCol) => {
     if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
-    return !isPathBlocked(fromRow, fromCol, toRow, toCol);
+
+    const rowStep = fromRow < toRow ? 1 : -1;
+    const colStep = fromCol < toCol ? 1 : -1;
+    let row = fromRow + rowStep;
+    let col = fromCol + colStep;
+
+    while (row !== toRow && col !== toCol) {
+      if (boardState[row][col]) return false;
+      row += rowStep;
+      col += colStep;
+    }
+
+    return true;
   };
 
   const isPathBlocked = (fromRow, fromCol, toRow, toCol) => {
