@@ -108,6 +108,8 @@
             square.appendChild(pieceElement);
 
             pieceElement.addEventListener('click', () => selectPiece(row, col));
+          } else {
+            square.addEventListener('click', () => movePiece(row, col));
           }
 
           chessboard.appendChild(square);
@@ -119,13 +121,9 @@
       const piece = boardState[row][col];
       if (!piece || !isPlayersTurn(piece)) return;
 
-      if (selectedPiece) {
-        movePiece(row, col);
-      } else {
-        selectedPiece = piece;
-        selectedPosition = { row, col };
-        highlightSquare(row, col);
-      }
+      selectedPiece = piece;
+      selectedPosition = { row, col };
+      highlightSquare(row, col);
     }
 
     function isPlayersTurn(piece) {
@@ -134,16 +132,18 @@
     }
 
     function movePiece(row, col) {
-      if (isValidMove(selectedPosition.row, selectedPosition.col, row, col)) {
-        const oldRow = selectedPosition.row;
-        const oldCol = selectedPosition.col;
+      if (!selectedPiece) return;
+
+      const fromRow = selectedPosition.row;
+      const fromCol = selectedPosition.col;
+
+      if (isValidMove(fromRow, fromCol, row, col)) {
+        const targetPiece = boardState[row][col];
 
         // Animación de movimiento
-        animateMove(oldRow, oldCol, row, col, () => {
-          const targetPiece = boardState[row][col];
-
+        animateMove(fromRow, fromCol, row, col, () => {
           // Actualizar el estado del tablero
-          boardState[oldRow][oldCol] = '';
+          boardState[fromRow][fromCol] = '';
           boardState[row][col] = selectedPiece;
 
           // Reproducir sonido
@@ -165,16 +165,16 @@
           }
 
           // Enroque
-          if (selectedPiece === '♔' && Math.abs(oldCol - col) === 2) {
+          if (selectedPiece === '♔' && Math.abs(fromCol - col) === 2) {
             const rookCol = col === 6 ? 7 : 0;
             const newRookCol = col === 6 ? 5 : 3;
-            boardState[oldRow][rookCol] = '';
-            boardState[oldRow][newRookCol] = '♖';
-          } else if (selectedPiece === '♚' && Math.abs(oldCol - col) === 2) {
+            boardState[fromRow][rookCol] = '';
+            boardState[fromRow][newRookCol] = '♖';
+          } else if (selectedPiece === '♚' && Math.abs(fromCol - col) === 2) {
             const rookCol = col === 6 ? 7 : 0;
             const newRookCol = col === 6 ? 5 : 3;
-            boardState[oldRow][rookCol] = '';
-            boardState[oldRow][newRookCol] = '♜';
+            boardState[fromRow][rookCol] = '';
+            boardState[fromRow][newRookCol] = '♜';
           }
 
           // Promoción de peones
@@ -231,6 +231,41 @@
       }
     }
 
+    function isValidPawnMove(fromRow, fromCol, toRow, toCol, isWhite) {
+      const direction = isWhite ? -1 : 1;
+      const startRow = isWhite ? 6 : 1;
+
+      // Movimiento hacia adelante
+      if (fromCol === toCol && boardState[toRow][toCol] === '') {
+        return fromRow + direction === toRow || (fromRow === startRow && fromRow + 2 * direction === toRow && boardState[fromRow + direction][fromCol] === '');
+      }
+
+      // Captura diagonal
+      if (Math.abs(fromCol - toCol) === 1 && fromRow + direction === toRow && boardState[toRow][toCol]) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function isValidRookMove(fromRow, fromCol, toRow, toCol) {
+      return isValidStraightMove(fromRow, fromCol, toRow, toCol);
+    }
+
+    function isValidKnightMove(fromRow, fromCol, toRow, toCol) {
+      const rowDiff = Math.abs(fromRow - toRow);
+      const colDiff = Math.abs(fromCol - toCol);
+      return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+    }
+
+    function isValidBishopMove(fromRow, fromCol, toRow, toCol) {
+      return isValidDiagonalMove(fromRow, fromCol, toRow, toCol);
+    }
+
+    function isValidQueenMove(fromRow, fromCol, toRow, toCol) {
+      return isValidStraightMove(fromRow, fromCol, toRow, toCol) || isValidDiagonalMove(fromRow, fromCol, toRow, toCol);
+    }
+
     function isValidKingMove(fromRow, fromCol, toRow, toCol) {
       const rowDiff = Math.abs(fromRow - toRow);
       const colDiff = Math.abs(fromCol - toCol);
@@ -257,6 +292,36 @@
       }
 
       return false;
+    }
+
+    function isValidStraightMove(fromRow, fromCol, toRow, toCol) {
+      if (fromRow !== toRow && fromCol !== toCol) return false;
+
+      const step = fromRow === toRow ? (toCol > fromCol ? 1 : -1) : (toRow > fromRow ? 1 : -1);
+      const range = fromRow === toRow ? Math.abs(toCol - fromCol) : Math.abs(toRow - fromRow);
+
+      for (let i = 1; i < range; i++) {
+        const newRow = fromRow === toRow ? fromRow : fromRow + i * step;
+        const newCol = fromCol === toCol ? fromCol + i * step : fromCol;
+        if (boardState[newRow][newCol]) return false;
+      }
+
+      return true;
+    }
+
+    function isValidDiagonalMove(fromRow, fromCol, toRow, toCol) {
+      if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
+
+      const rowStep = toRow > fromRow ? 1 : -1;
+      const colStep = toCol > fromCol ? 1 : -1;
+
+      for (let i = 1; i < Math.abs(fromRow - toRow); i++) {
+        const newRow = fromRow + i * rowStep;
+        const newCol = fromCol + i * colStep;
+        if (boardState[newRow][newCol]) return false;
+      }
+
+      return true;
     }
 
     function isPathBlocked(fromRow, fromCol, toRow, toCol) {
