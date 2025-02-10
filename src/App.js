@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Board from './components/Board/Board';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 import './App.css';
 
 const initialBoardState = [
@@ -190,13 +192,14 @@ function App() {
 
   return (
     <div>
-      <h1>Ajedrez</h1>
+      <Header />
       <Board
         boardState={boardState}
         handleSquareClick={handleSquareClick}
         selectedPosition={selectedPosition}
       />
       <div className="message">{message}</div>
+      <Footer />
       <audio id="moveSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
       <audio id="captureSound" src="https://www.soundjay.com/misc/sounds/finger-snap-1.mp3" preload="auto"></audio>
     </div>

@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Bungee+Inline&display=swap');
+
+.header {
+  font-family: "Bruno Ace SC", serif;
+  background-color: #333;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+}
