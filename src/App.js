@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Board from './components/Board/Board';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import GameModeSelector from './components/GameModeSelector/GameModeSelector';
+import { Chess } from 'chess.js';
 import './App.css';
 
 const initialBoardState = [
@@ -21,6 +23,8 @@ function App() {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState('white');
   const [message, setMessage] = useState('');
+  const [gameMode, setGameMode] = useState('multiplayer');
+  const chess = new Chess();
 
   useEffect(() => {
     // No need to call createBoard here as the Board component will handle rendering
@@ -59,9 +63,48 @@ function App() {
       newBoardState[fromRow][fromCol] = '';
       setBoardState(newBoardState);
       setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
+
+      if (gameMode === 'singleplayer' && currentPlayer === 'white') {
+        setTimeout(() => {
+          makeComputerMove(newBoardState);
+        }, 1000);
+      }
     }
 
     clearSelection();
+  };
+
+  const makeComputerMove = (board) => {
+    // Implement a simple AI for the computer's move
+    // For now, just make a random valid move
+    const validMoves = getAllValidMoves(board, 'black');
+    if (validMoves.length > 0) {
+      const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+      const newBoardState = [...board];
+      newBoardState[randomMove.toRow][randomMove.toCol] = newBoardState[randomMove.fromRow][randomMove.fromCol];
+      newBoardState[randomMove.fromRow][randomMove.fromCol] = '';
+      setBoardState(newBoardState);
+      setCurrentPlayer('white');
+    }
+  };
+
+  const getAllValidMoves = (board, player) => {
+    const moves = [];
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && (player === 'white' ? piece.charCodeAt(0) < 9818 : piece.charCodeAt(0) >= 9818)) {
+          for (let toRow = 0; toRow < 8; toRow++) {
+            for (let toCol = 0; toCol < 8; toCol++) {
+              if (isValidMove(row, col, toRow, toCol)) {
+                moves.push({ fromRow: row, fromCol: col, toRow, toCol });
+              }
+            }
+          }
+        }
+      }
+    }
+    return moves;
   };
 
   const isValidMove = (fromRow, fromCol, toRow, toCol) => {
@@ -193,6 +236,7 @@ function App() {
   return (
     <div>
       <Header />
+      <GameModeSelector setGameMode={setGameMode} />
       <Board
         boardState={boardState}
         handleSquareClick={handleSquareClick}

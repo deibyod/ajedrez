@@ -3047,6 +3047,11 @@ check-types@^11.2.3:
   resolved "https://registry.yarnpkg.com/check-types/-/check-types-11.2.3.tgz#1ffdf68faae4e941fce252840b1787b8edc93b71"
   integrity sha512-+67P1GkJRaxQD6PKK0Et9DhwQB+vGg3PM5+aavopCpZT1lj9jeqfvpgTLAWErNj8qApkkmXlu/Ug74kmhagkXg==
 
+chess.js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chess.js/-/chess.js-1.0.0.tgz#2bf53c75722bab9b730533e82a6e08a79d88f52d"
+  integrity sha512-zHaSRub6xkUXxvX9lqgovwRiBvbOmVCTh47rZ0I/HVyCiNc0T5bVLwzshL5X6JtrP+rN/CTmIxdpFr943eP97Q==
+
 chokidar@^3.4.2, chokidar@^3.5.3, chokidar@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
@@ -8475,6 +8480,11 @@ statuses@2.0.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
+
+stockfish@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/stockfish/-/stockfish-16.0.0.tgz#b643061b0f159fbd2b55da4e3d44515cf0c9fc74"
+  integrity sha512-uu4AqsE2x0tD+SsYzZy4UtqeH4U9zDi1V8loDFDbMwCtvumGXF9j81Pg1ZmIkUgZhwQqPxQAv8IN5oy6hZa7Bw==
 
 string-length@^4.0.1:
   version "4.0.2"

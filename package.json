@@ -4,9 +4,11 @@
   "private": true,
   "homepage": "https://ajedrez.deibyod.co",
   "dependencies": {
+    "chess.js": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "stockfish": "^16.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
